@@ -1,3 +1,7 @@
+gcp_info.json
+gcp_test.py
+excess-energy-prediction-393ec78547e4.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
