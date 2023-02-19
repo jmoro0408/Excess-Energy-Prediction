@@ -1,4 +1,4 @@
-
+from io import StringIO
 from google.cloud import storage
 import pandas as pd
 
@@ -55,3 +55,18 @@ def read_blob(bucket_name:str, blob_name:str):
 
     with blob.open("r") as f:
         print(f.read())
+
+def read_blob_to_pandas(bucket_name:str, blob_name:str) -> pd.DataFrame:
+    """Read a blob from GCS using file-like IO"""
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+
+    # The ID of your new GCS object
+    # blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    # Read from bucket
+    data_str = blob.download_as_text()
+    return pd.read_csv(StringIO(data_str))
