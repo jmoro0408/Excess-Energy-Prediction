@@ -8,7 +8,6 @@ def list_buckets(project_id:str) -> list[str]:
     storage_client = storage.Client(project=project_id)
     bucket_name_list = []
     buckets = storage_client.list_buckets()
-    print("Buckets:")
     for bucket in buckets:
         bucket_name_list.append(bucket.name)
     return bucket_name_list
