@@ -1,10 +1,12 @@
 from io import StringIO
-from google.cloud import storage
-import pandas as pd
 from pathlib import Path
 from typing import Union
 
-def list_buckets(project_id:str) -> list[str]:
+import pandas as pd
+from google.cloud import storage
+
+
+def list_buckets(project_id: str) -> list[str]:
     storage_client = storage.Client(project=project_id)
     bucket_name_list = []
     buckets = storage_client.list_buckets()
@@ -12,17 +14,19 @@ def list_buckets(project_id:str) -> list[str]:
         bucket_name_list.append(bucket.name)
     return bucket_name_list
 
-def list_blobs(project_id:str, bucket_name:str) -> list[str]:
+
+def list_blobs(project_id: str, bucket_name: str) -> list[str]:
     storage_client = storage.Client(project=project_id)
     blob_name_list = []
-    blobs = storage_client.list_blobs(bucket_or_name = bucket_name)
+    blobs = storage_client.list_blobs(bucket_or_name=bucket_name)
     for blob in blobs:
         blob_name_list.append(blob.name)
     return blob_name_list
 
-def write_to_blob_csv(bucket_name:str,
-                      df:pd.DataFrame,
-                      filepath:Union[str,Path]) -> None:
+
+def write_to_blob_csv(
+    bucket_name: str, df: pd.DataFrame, filepath: Union[str, Path]
+) -> None:
     """Writes a pandas df to a gcp blob as a csv.
 
     Args:
@@ -36,17 +40,16 @@ def write_to_blob_csv(bucket_name:str,
         None
     """
     filepath = Path(filepath)
-    if filepath.suffix != '.csv':
-        filepath = filepath.with_suffix('.csv')
+    if filepath.suffix != ".csv":
+        filepath = filepath.with_suffix(".csv")
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
-    bucket.blob(str(filepath)).upload_from_string(df.to_csv(index = False), 'text/csv')
-    print(f'{filepath} uploaded to {bucket}')
+    bucket.blob(str(filepath)).upload_from_string(df.to_csv(index=False), "text/csv")
+    print(f"{filepath} uploaded to {bucket}")
     return None
 
 
-
-def read_blob(bucket_name:str, blob_name:str):
+def read_blob(bucket_name: str, blob_name: str):
     """Read a blob from GCS using file-like IO"""
     # The ID of your GCS bucket
     # bucket_name = "your-bucket-name"
@@ -61,7 +64,8 @@ def read_blob(bucket_name:str, blob_name:str):
     with blob.open("r") as f:
         print(f.read())
 
-def read_blob_to_pandas(bucket_name:str, blob_name:str, **kwargs) -> pd.DataFrame:
+
+def read_blob_to_pandas(bucket_name: str, blob_name: str, **kwargs) -> pd.DataFrame:
     """Read a blob from GCS using file-like IO"""
     # **kwargs to be passed to pd.read_csv()
     # The ID of your GCS bucket
